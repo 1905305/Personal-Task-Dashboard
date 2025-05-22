@@ -2,24 +2,11 @@ import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   return (
-    <nav style={styles.nav}>
-      <Link to="/" style={styles.link}>Home</Link>
-      <Link to="/tasks" style={styles.link}>Tasks</Link>
-      <Link to="/time-tracking" style={styles.link}>Tracking</Link>
-      <Link to="/stats" style={styles.link}>Stats</Link>
+    <nav className="bg-gray-800 p-4 flex gap-6">
+      <Link to="/" className="text-white hover:text-yellow-300">Home</Link>
+      <Link to="/tasks" className="text-white hover:text-yellow-300">Tasks</Link>
+      <Link to="/time-tracking" className="text-white hover:text-yellow-300">Tracking</Link>
+      <Link to="/stats" className="text-white hover:text-yellow-300">Stats</Link>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    padding: '1rem',
-    background: '#282c34',
-    display: 'flex',
-    gap: '1rem'
-  },
-  link: {
-    color: 'white',
-    textDecoration: 'none'
-  }
-};
