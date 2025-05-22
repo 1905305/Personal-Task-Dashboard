@@ -14,11 +14,52 @@ export default function TaskForm({ onAddTask }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-      <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
-      <button type="submit">Add Task</button>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 20,
+        gap: 10,
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+      />
+      <input
+        type="text"
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        required
+        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+      />
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+        required
+        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+      />
+      <button
+        type="submit"
+        style={{
+          padding: '10px',
+          fontSize: '16px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        Add Task
+      </button>
     </form>
   );
 }

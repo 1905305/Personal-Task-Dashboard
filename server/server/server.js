@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // Only once at the top
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -13,11 +13,16 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB connected successfully'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Routes
+
+// Get all tasks
 app.get('/api/tasks', async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -27,6 +32,7 @@ app.get('/api/tasks', async (req, res) => {
   }
 });
 
+// Add a new task
 app.post('/api/tasks', async (req, res) => {
   try {
     const task = new Task(req.body);
@@ -37,17 +43,21 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
+// Delete a task by ID
 app.delete('/api/tasks/:id', async (req, res) => {
-  try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask) {
-      return res.status(404).json({ message: 'Task not found' });
+    try {
+      const deletedTask = await Task.findByIdAndDelete(req.params.id);
+      if (!deletedTask) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+      res.json({ message: 'Task deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-    res.json({ message: 'Task deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  });
+  
+
+
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
