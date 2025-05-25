@@ -1,54 +1,35 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const Task = require('./models/Task');
+const connectDB = require('./config/db');
+
+const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
-
-// Routes
-app.get('/api/tasks', async (req, res) => {
+const startServer = async () => {
   try {
-    const tasks = await Task.find();
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    await connectDB();
+    console.log('✅ MongoDB connected successfully');
 
-app.post('/api/tasks', async (req, res) => {
-  try {
-    const task = new Task(req.body);
-    await task.save();
-    res.status(201).json(task);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+    app.use('/api/tasks', taskRoutes);
+    app.use('/api/auth', authRoutes);
 
-app.delete('/api/tasks/:id', async (req, res) => {
-  try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-    res.json({ message: 'Task deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    app.get('/', (req, res) => {
+      res.send('API is running');
+    });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+  }
+};
+
+startServer();

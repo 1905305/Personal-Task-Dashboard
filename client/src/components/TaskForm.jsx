@@ -1,35 +1,47 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function TaskForm({ onAddTask }) {
+const TaskForm = ({ onAddTask, onUpdateTask, editingTask, cancelEdit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
 
+  useEffect(() => {
+    if (editingTask) {
+      setTitle(editingTask.title || '');
+      setDescription(editingTask.description || '');
+      setDueDate(editingTask.dueDate ? editingTask.dueDate.slice(0, 10) : '');
+    } else {
+      setTitle('');
+      setDescription('');
+      setDueDate('');
+    }
+  }, [editingTask]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddTask({ title, description, dueDate });
-    setTitle('');
-    setDescription('');
-    setDueDate('');
+    if (!title.trim() || !description.trim() || !dueDate) return;
+
+    const taskData = { title: title.trim(), description: description.trim(), dueDate };
+
+    if (editingTask) {
+      onUpdateTask({ ...editingTask, ...taskData });
+    } else {
+      onAddTask(taskData);
+      setTitle('');
+      setDescription('');
+      setDueDate('');
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        marginBottom: 20,
-        gap: 10,
-      }}
-    >
+    <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
       <input
         type="text"
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
-        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+        style={{ marginBottom: '0.5rem', padding: '0.5rem', width: '100%' }}
       />
       <input
         type="text"
@@ -37,29 +49,27 @@ export default function TaskForm({ onAddTask }) {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
-        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+        style={{ marginBottom: '0.5rem', padding: '0.5rem', width: '100%' }}
       />
       <input
         type="date"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
         required
-        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+        style={{ marginBottom: '0.5rem', padding: '0.5rem', width: '100%' }}
       />
-      <button
-        type="submit"
-        style={{
-          padding: '10px',
-          fontSize: '16px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Add Task
-      </button>
+      <div>
+        <button type="submit" style={{ marginRight: '1rem' }}>
+          {editingTask ? 'Update Task' : 'Add Task'}
+        </button>
+        {editingTask && (
+          <button type="button" onClick={cancelEdit}>
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
-}
+};
+
+export default TaskForm;

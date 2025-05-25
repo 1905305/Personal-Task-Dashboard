@@ -3,24 +3,24 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import StatsView from './pages/StatsView';
 import TaskList from './pages/TaskList';
 import TimeTracking from './pages/TimeTracking';
-import StatsView from './pages/StatsView';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Navbar />
-      <div className="container mx-auto p-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tasks" element={<TaskList />} />
-          <Route path="/time-tracking" element={<TimeTracking />} />
-          <Route path="/stats" element={<StatsView />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/tasks" element={<TaskList />} />
+        <Route path="/time-tracking" element={<TimeTracking />} />
+        <Route path="/stats-view" element={<StatsView />} />
+      </Routes>
     </Router>
   );
 }
-
-export default App;
